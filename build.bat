@@ -21,6 +21,7 @@ pyinstaller ^
     --add-data "haha.gif;." ^
     --hidden-import pyttsx3.drivers ^
     --hidden-import pyttsx3.drivers.sapi5 ^
+    --version-file version_info.txt ^
     --name haha ^
     haha.py
 if errorlevel 1 (echo FAILED: pyinstaller & pause & exit /b 1)
