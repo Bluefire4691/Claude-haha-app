@@ -3,11 +3,13 @@ name: Build haha.exe
 on:
   push:
     branches: ["claude/windows-gif-prank-app-VGgol", "main"]
-  workflow_dispatch:   # lets you trigger it manually from the Actions tab
+  workflow_dispatch:   # trigger manually from the Actions tab
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write   # needed to create/delete releases and tags
 
     steps:
       - uses: actions/checkout@v4
@@ -18,18 +20,21 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        shell: bash
         run: pip install -r requirements.txt
 
       - name: Generate haha.gif
+        shell: bash
         run: python create_gif.py
 
       - name: Build exe with PyInstaller
+        shell: bash
         run: |
-          pyinstaller `
-            --onefile `
-            --windowed `
-            --add-data "haha.gif;." `
-            --name haha `
+          pyinstaller \
+            --onefile \
+            --windowed \
+            --add-data "haha.gif;." \
+            --name haha \
             haha.py
 
       - name: Upload artifact
@@ -39,22 +44,20 @@ jobs:
           path: dist/haha.exe
           retention-days: 90
 
-      # Also publish a GitHub Release tagged "latest-build" so there's
-      # always a direct download link.
       - name: Delete old latest-build release (if exists)
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete latest-build --yes 2>$null || true
-          git push origin :refs/tags/latest-build 2>$null || true
-        shell: pwsh
+          gh release delete latest-build --yes 2>/dev/null || true
+          git push origin :refs/tags/latest-build 2>/dev/null || true
 
       - name: Create GitHub Release with exe
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create latest-build dist/haha.exe `
-            --title "haha.exe (latest build)" `
-            --notes "Auto-built by GitHub Actions. Download haha.exe, run it on your friend's Windows PC, and enjoy." `
+          gh release create latest-build dist/haha.exe \
+            --title "haha.exe (latest build)" \
+            --notes "Auto-built by GitHub Actions. Download haha.exe, drop it on your friend's Windows PC, and enjoy." \
             --prerelease
-        shell: pwsh
