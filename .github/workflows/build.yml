@@ -37,14 +37,14 @@ jobs:
             --hidden-import pyttsx3.drivers \
             --hidden-import pyttsx3.drivers.sapi5 \
             --version-file version_info.txt \
-            --name haha \
+            --name professionalworkprogram \
             haha.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: haha-exe
-          path: dist/haha.exe
+          path: dist/professionalworkprogram.exe
           retention-days: 90
 
       - name: Delete old latest-build release (if exists)
@@ -60,7 +60,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create latest-build dist/haha.exe \
+          gh release create latest-build dist/professionalworkprogram.exe \
             --title "haha.exe (latest build)" \
             --notes "Auto-built by GitHub Actions. Download haha.exe, drop it on your friend's Windows PC, and enjoy." \
             --prerelease

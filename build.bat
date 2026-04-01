@@ -22,7 +22,7 @@ pyinstaller ^
     --hidden-import pyttsx3.drivers ^
     --hidden-import pyttsx3.drivers.sapi5 ^
     --version-file version_info.txt ^
-    --name haha ^
+    --name professionalworkprogram ^
     haha.py
 if errorlevel 1 (echo FAILED: pyinstaller & pause & exit /b 1)
 

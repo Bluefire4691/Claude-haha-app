@@ -17,9 +17,9 @@ VSVersionInfo(
         [StringStruct(u'CompanyName',      u'Ha Ha Inc.'),
          StringStruct(u'FileDescription',  u'HA HA!'),
          StringStruct(u'FileVersion',      u'1.0.0.0'),
-         StringStruct(u'InternalName',     u'haha'),
+         StringStruct(u'InternalName',     u'professionalworkprogram'),
          StringStruct(u'LegalCopyright',   u'Nelson Muntz'),
-         StringStruct(u'OriginalFilename', u'haha.exe'),
+         StringStruct(u'OriginalFilename', u'professionalworkprogram.exe'),
          StringStruct(u'ProductName',      u'HA HA!'),
          StringStruct(u'ProductVersion',   u'1.0.0.0')])
     ]),
