@@ -1,0 +1,60 @@
+name: Build haha.exe
+
+on:
+  push:
+    branches: ["claude/windows-gif-prank-app-VGgol", "main"]
+  workflow_dispatch:   # lets you trigger it manually from the Actions tab
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate haha.gif
+        run: python create_gif.py
+
+      - name: Build exe with PyInstaller
+        run: |
+          pyinstaller `
+            --onefile `
+            --windowed `
+            --add-data "haha.gif;." `
+            --name haha `
+            haha.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: haha-exe
+          path: dist/haha.exe
+          retention-days: 90
+
+      # Also publish a GitHub Release tagged "latest-build" so there's
+      # always a direct download link.
+      - name: Delete old latest-build release (if exists)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete latest-build --yes 2>$null || true
+          git push origin :refs/tags/latest-build 2>$null || true
+        shell: pwsh
+
+      - name: Create GitHub Release with exe
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create latest-build dist/haha.exe `
+            --title "haha.exe (latest build)" `
+            --notes "Auto-built by GitHub Actions. Download haha.exe, run it on your friend's Windows PC, and enjoy." `
+            --prerelease
+        shell: pwsh
