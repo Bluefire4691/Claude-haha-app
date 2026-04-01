@@ -12,6 +12,7 @@ Kill it the normal way: Task Manager -> End Task on "haha.exe"
 import os
 import random
 import sys
+import threading
 import time
 import tkinter as tk
 
@@ -29,6 +30,24 @@ def resource_path(name: str) -> str:
     else:
         base = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base, name)
+
+
+# ---------------------------------------------------------------------------
+# Sound
+# ---------------------------------------------------------------------------
+
+def play_sound() -> None:
+    """Speak 'HA HA!' using the Windows built-in TTS voice."""
+    try:
+        import pyttsx3
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 95)       # slow and obnoxious
+        engine.setProperty("volume", 1.0)
+        engine.say("HA   HA!")               # extra space = brief pause between HAs
+        engine.runAndWait()
+        engine.stop()
+    except Exception:
+        pass  # no sound is fine – visual prank still works
 
 
 # ---------------------------------------------------------------------------
@@ -91,6 +110,9 @@ def show_haha() -> None:
 
     animate()
     popup.focus_force()
+
+    # Fire sound in background so it doesn't block the animation
+    threading.Thread(target=play_sound, daemon=True).start()
 
     # Auto-destroy after exactly one full loop
     one_loop_ms = sum(durations)

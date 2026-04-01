@@ -19,6 +19,8 @@ pyinstaller ^
     --onefile ^
     --windowed ^
     --add-data "haha.gif;." ^
+    --hidden-import pyttsx3.drivers ^
+    --hidden-import pyttsx3.drivers.sapi5 ^
     --name haha ^
     haha.py
 if errorlevel 1 (echo FAILED: pyinstaller & pause & exit /b 1)
