@@ -33,6 +33,34 @@ def resource_path(name: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Auto-startup (Windows registry, no admin required)
+# ---------------------------------------------------------------------------
+
+def install_autostart() -> None:
+    """Add this exe to HKCU Run so it starts automatically at Windows login.
+
+    Uses HKEY_CURRENT_USER so no admin rights are needed.
+    Only runs when launched as a compiled exe (not as a .py script).
+    Safe to call every launch — it just overwrites the same value.
+    """
+    if sys.platform != "win32":
+        return
+    if not getattr(sys, "frozen", False):   # only when built by PyInstaller
+        return
+    try:
+        import winreg
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Run",
+            0, winreg.KEY_SET_VALUE,
+        )
+        winreg.SetValueEx(key, "HaHa", 0, winreg.REG_SZ, f'"{sys.executable}"')
+        winreg.CloseKey(key)
+    except Exception:
+        pass  # silently skip if registry write fails
+
+
+# ---------------------------------------------------------------------------
 # Sound
 # ---------------------------------------------------------------------------
 
@@ -131,6 +159,9 @@ FIRST_SHOW_SEC = 10      # show quickly on first run so you know it's working
 
 
 def main() -> None:
+    # Register in Windows startup (no-op if not a compiled exe or not Windows)
+    install_autostart()
+
     # First appearance – quick so you can verify it's running
     time.sleep(FIRST_SHOW_SEC)
     show_haha()
